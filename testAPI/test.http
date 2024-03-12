@@ -1,7 +1,32 @@
 @host = http://localhost:3000
 
+
+###
+GET {{host}}/users?pageNumber=5
 ###
 GET {{host}}/users?name=w
 
 ###
 GET {{host}}/users?name=w&email=H
+
+###
+    GET {{host}}/users?pageNumber=12
+
+###
+
+POST {{host}}/users
+Content-Type: application/json
+
+{
+    "name":"Marta",
+    "email": "marta@test.com"
+}
+
+###
+
+POST {{host}}/users
+Content-Type: application/json
+
+{
+    "name":"asdf"
+}
