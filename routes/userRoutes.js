@@ -1,11 +1,19 @@
 const router = require("express").Router()
 const users = require('../data/usersdata.json')
+const auth = require('../middlewares/auth')
 const {nanoid} = require('nanoid')
 const fs = require('fs')
 
 // console.log(users);
-router.get('/', (req,res)=>{
+router.get('/', auth.validateHeader, auth.validateAdmin, (req,res)=>{
     console.log(req.query);
+    // console.log(req.get('x-auth'));
+    // let token = req.get('x-auth')
+    // let admin = false;
+    // if(token == '23423')
+    //     admin = true;
+
+    
     let filteredUsers = users.slice()
     let {name, email, minId, maxId, pageSize, pageNumber} = req.query;
     console.log(name, email);
@@ -36,7 +44,9 @@ router.get('/', (req,res)=>{
 
     // pageSize = pageSize? pageSize: 3
 
-
+    if(!req.admin){
+        filteredUsers = filteredUsers.map(u => ({name: u.name}))
+    }
 
     res.send(filteredUsers)
 })
@@ -82,7 +92,7 @@ router.post('/', (req,res)=>{
         users.push(userObj)
         fs.writeFileSync('./data/usersdata.json', JSON.stringify(users) )
 
-        res.send(userObj)
+        res.status(201).send(userObj)
         return
     }
 
@@ -96,29 +106,49 @@ router.post('/', (req,res)=>{
 
 })
 
+
+//updating an existent object
 router.put('/:id', (req,res)=>{
     //search for the id
+    let user = users.find( u => u.id == req.params.id)
 
     //if not found 
+    if (!user){
         // return 404 not found 
-
+        res.status(404).send({error: 'User not found'})
+        return
+    }
+       
     //if found
-        // update data 
+        // update data z
+    let {name, email} = req.body;
 
-        // store data in file
+    if(!name || !email) {
+        res.status(400).send({error: 'name or email are not valid'})
+        return
+    }
 
-        // return the updated object
+    user.name = name;
+    user.email = email;
+    fs.writeFileSync('./data/usersdata.json', JSON.stringify(users) )
+    res.send(user)
+
+        
 })
 
-router.delete('/:id', (req, res)=>{
+router.delete('/:id', auth.validateHeader, auth.requiredAdmin, (req, res)=>{
     // search for the id
-
+    let pos= users.findIndex(u => u.id == req.params.id)
+    
     // if not found return 404
+    if(pos== -1){
+        res.status(404).send({error: 'User not found'})
+        return
+    }
 
-    // if found
-        //delete object 
-        //update file
-        //return deleted object 
+    let deletedUser = users.splice(pos,1)
+    fs.writeFileSync('./data/usersdata.json', JSON.stringify(users) )
+    res.send({deletedUser})
 })
 
 module.exports = router;

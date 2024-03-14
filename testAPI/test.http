@@ -3,14 +3,16 @@
 
 ###
 GET {{host}}/users?pageNumber=5
+
 ###
-GET {{host}}/users?name=w
+GET {{host}}/users
+x-auth: 23423
 
 ###
 GET {{host}}/users?name=w&email=H
 
 ###
-    GET {{host}}/users?pageNumber=12
+    GET {{host}}/users?pageNumber=3
 
 ###
 
@@ -22,6 +24,11 @@ Content-Type: application/json
     "email": "marta@test.com"
 }
 
+
+###
+
+GET {{host}}/users
+
 ###
 
 POST {{host}}/users
@@ -30,3 +37,17 @@ Content-Type: application/json
 {
     "name":"asdf"
 }
+
+###
+
+PUT {{host}}/users/2
+Content-Type: application/json
+
+{
+    "name":"user2",
+    "email":"user2@test.com"
+}
+
+###
+DELETE {{host}}/users/4
+x-auth: 345346
