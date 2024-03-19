@@ -2,10 +2,10 @@
 
 
 ###
-GET {{host}}/users?pageNumber=5
+GET {{host}}/api/users?pageNumber=5
 
 ###
-GET {{host}}/users
+GET {{host}}/api/users
 x-auth: 23423
 
 ###

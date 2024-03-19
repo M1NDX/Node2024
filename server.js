@@ -1,5 +1,6 @@
 const express = require('express');
 const userRoutes = require('./routes/userRoutes')
+const path = require('path')
 const app = express();
 const port = 3000;
 
@@ -9,7 +10,9 @@ function logger(req, res, next){
     next()
 }
 
+console.log(__dirname);
 
+app.use(express.static(path.join(__dirname, 'public')))
 
 //we can read the body through req.body
 app.use(express.json())
@@ -18,6 +21,6 @@ app.get('/', (req,res)=>{
     res.send("hello")
 })
 
-app.use('/users', logger,  userRoutes )
+app.use('/api/users', logger,  userRoutes )
 
 app.listen(port, ()=>console.log("running in port "+port) )
