@@ -33,7 +33,8 @@
                 name=""
                 id="name"
                 aria-describedby="helpId"
-                placeholder=""
+                required
+
             />
             <small id="helpId" class="form-text text-muted">Help text</small>
         </div>
@@ -47,6 +48,7 @@
                 id="email"
                 aria-describedby="helpId"
                 placeholder=""
+                required
             />
             <small id="helpId" class="form-text text-muted">Help text</small>
         </div>
@@ -88,6 +90,45 @@
                 
                 
             }
+
+            function disableEnableButton(){
+                let inputs = document.querySelectorAll('input')
+                let button = document.querySelector('button')
+                let inputArr = Array.from(inputs)
+                button.classList.remove('disabled')
+                if( inputArr.some(input => !input.value)){
+                    button.classList.add('disabled')
+                }
+            }
+
+            function createInputAsHTML(name, type){
+                let html = `<input class="form-control mb-3" id="${name}" name="${name}" type="${type}" placeholder="password" required >`
+                //last div inside the form
+                let lastDiv = document.querySelector("form > div:last-of-type")
+                lastDiv.insertAdjacentHTML('afterend', html)
+            }
+
+            createInputAsHTML("password", "password")
+
+            function createInputAsElement(name, type){
+                let pswRepeat = document.createElement('input')
+                pswRepeat.setAttribute('type', 'password')
+                pswRepeat.classList.add('form-control')
+                pswRepeat.classList.add('mb-3')
+                pswRepeat.setAttribute('required', true)
+                pswRepeat.setAttribute('placeholder', 'Repeat password')
+                let button = document.querySelector('form button')
+                console.log(button);
+                button.insertAdjacentElement('beforebegin', pswRepeat)
+
+            }
+            createInputAsElement('passwordRepeat', 'password')
+
+            disableEnableButton()
+            document.querySelectorAll('input').forEach(e => e.onchange = disableEnableButton)
+            
+
+
 
         </script>
         
