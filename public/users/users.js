@@ -1,4 +1,5 @@
 let usersArray = []
+let selectedUserId = -1
 
 async function loadData(){
     let inputUserId = document.querySelector('#userid')
@@ -30,7 +31,7 @@ function showUsersTable(userArray) {
   let html = /*html*/ `
 
             
-            <table> 
+            <table id="userList"> 
             <tr> 
                     <th>Name</th>
                     <th>Email</th>
@@ -54,7 +55,7 @@ function showUsersTable(userArray) {
                             class="btn btn-primary"
                             href="#"
                             role="button"
-                            onclick = "deleteUser('${user.id}')"
+                            onclick = "deleteUserV2('${user.id}')"
                             ><i class="bi bi-trash3-fill"></i>
                         </a>
    
@@ -67,6 +68,13 @@ function showUsersTable(userArray) {
            `;
 
   document.querySelector("#info").innerHTML = html;
+  let tableList = document.querySelector('#userList');
+  tableList.addEventListener('click', (e)=> {
+    if(e.target.nodeName!='A' && e.target.nodeName!='I'){
+      return;
+    }
+    console.log(e.target.nodeName);
+  })
 }
 
 
@@ -89,24 +97,72 @@ function editUser(id){
 }
 
 function deleteUser(id){
+    selectedUserId = id
     console.log("user to delete: ",id);
-    //https://sweetalert.js.org/
+    let userData = usersArray.find(u => u.id == id)
+    console.log(userData);
+    let modalId = document.getElementById('confirmModal');
+    let userNameModal = document.getElementById('userName')
+    userNameModal.innerText = userData.name;
+    userNameModal.setAttribute('data-userId',userData.id)
+    let myModal = new bootstrap.Modal(modalId, {});
+    myModal.show()
+
+    //show a confirmation modal with the name of the user to delete
+      //if yes 
+        // send a delete request to the server
+          //if deleted show a message "user deleted"
+            //update data (withouth refresh page)
+          //error: show the error
+
+}
+
+async function deleteUserV2(id){
+  let userData = usersArray.find(u => u.id == id)
+  selectedUserId = id;
+  // https://sweetalert.js.org/
     swal({
         title: "Are you sure?",
-        text: "Once deleted, you will not be able to recover this user record",
+        text: "User to delete: "+userData.name,
         icon: "warning",
         buttons: true,
         dangerMode: true,
       })
-      .then((willDelete) => {
+      .then(async (willDelete) => {
         if (willDelete) {
-          swal("The user has been deleted!", {
-            icon: "success",
-          });
+          await confirmDelete()
         } else {
           swal("The user is safe!");
         }
       });
+}
+
+async function confirmDelete(){
+  let userNameModal = document.getElementById('userName')
+  let uid = userNameModal.getAttribute('data-userId')
+  let id = selectedUserId;
+  console.log('id to delete', id);
+  selectedUserId= -1;
+  let userData = usersArray.find(u => u.id == id)
+
+  let resp = await fetch('/api/users/'+id, {
+    headers: {
+      'x-auth': '23423'
+    },
+    method: 'DELETE'
+  })
+
+  let data = await resp.json()
+
+  if(!data.error){
+    //https://sweetalert.js.org/
+    swal("User deleted", "User:"+ userData.name + " deleted" , "success");
+    loadData()
+  }else{
+    swal("Error", data.error , "error");
+  }
+  
+
 }
 
 async function storeEditedUser(){
