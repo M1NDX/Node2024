@@ -2,26 +2,30 @@
 
 
 ###
-GET {{host}}/api/users?pageNumber=5
+GET {{host}}/api/users?pageSize=2
+x-auth: 23423
 
 ###
 GET {{host}}/api/users
 x-auth: 23423
 
 ###
-GET {{host}}/users?name=w&email=H
+
+GET {{host}}/api/users?name=s
+x-auth: 23426
 
 ###
     GET {{host}}/users?pageNumber=3
 
 ###
-
-POST {{host}}/users
+POST {{host}}/api/users
 Content-Type: application/json
+x-auth: 23423
 
 {
     "name":"Marta",
-    "email": "marta@test.com"
+    "email": "marta@test.com",
+    "password" : "1234"
 }
 
 
@@ -40,14 +44,15 @@ Content-Type: application/json
 
 ###
 
-PUT {{host}}/users/2
+PUT {{host}}/api/users/Gemini@google.com
 Content-Type: application/json
 
 {
-    "name":"user2",
-    "email":"user2@test.com"
+    "name":"Gemini2",
+    "email":"userasdfdsf2@test.com",
+    "password": "1234"
 }
 
 ###
-DELETE {{host}}/users/4
-x-auth: 345346
+DELETE {{host}}/api/users/Gemini@google.com
+x-auth: 23423
