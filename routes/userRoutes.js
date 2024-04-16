@@ -1,11 +1,12 @@
 const router = require("express").Router()
 const users = require('../data/usersdata.json')
+const {User} = require('../db/User')
 const auth = require('../middlewares/auth')
 const {nanoid} = require('nanoid')
 const fs = require('fs')
 
 // console.log(users);
-router.get('/', auth.validateHeader, auth.validateAdmin, (req,res)=>{
+router.get('/', auth.validateHeader, auth.validateAdmin, async (req,res)=>{
     console.log(req.query);
     // console.log(req.get('x-auth'));
     // let token = req.get('x-auth')
@@ -14,7 +15,9 @@ router.get('/', auth.validateHeader, auth.validateAdmin, (req,res)=>{
     //     admin = true;
 
     
-    let filteredUsers = users.slice()
+    // let filteredUsers = users.slice()
+    let filteredUsers = await User.findUsers()
+    console.log(filteredUsers);
     let {name, email, minId, maxId, pageSize, pageNumber} = req.query;
     console.log(name, email);
     if(name){
@@ -40,7 +43,7 @@ router.get('/', auth.validateHeader, auth.validateAdmin, (req,res)=>{
 
     let minIndex = (pageNumber-1)*pageSize
 
-    filteredUsers = filteredUsers.slice(minIndex, minIndex+pageSize)
+    // filteredUsers = filteredUsers.slice(minIndex, minIndex+pageSize)
 
     // pageSize = pageSize? pageSize: 3
 
