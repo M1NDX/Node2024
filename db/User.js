@@ -1,6 +1,7 @@
+const { use } = require("../routes/userRoutes");
 const {mongoose} = require("./connectdb")
 
-let userSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
     email:{
         type: String,
         unique: true,
@@ -13,8 +14,41 @@ let userSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    images: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'Image',
+        default:[]
+    }]
 })
+
+
+userSchema.statics.getImages = async(email) => {
+    let images = await User.findOne({email})
+                           .populate('images', 'name, url');
+    console.log(images.images);
+    return images.images;
+}
+
+
+userSchema.statics.addImage = async (email, imageId)=>{
+    const user = await User.findOne({email})
+    if(user){
+        user.images.push(imageId)
+        return await user.save()
+    }
+    return {error: "user not found"}
+}
+
+userSchema.statics.removeImage = async(email,imageId)=>{
+    const user = await User.findOneAndUpdate({email},{$pull:{images: imageId}}, {new:true}) 
+    return user;
+}
+
+userSchema.statics.addImageV2 = async (email, imageId)=>{
+    const user = await User.findOneAndUpdate({email},{$push:{images: imageId}}, {new:true}) 
+    return user;
+}
 
 userSchema.statics.findUsers = async (filter={}, 
      isAdmin = false,
@@ -27,6 +61,7 @@ userSchema.statics.findUsers = async (filter={},
                     .sort({name:1})
                     .skip((pageNumber-1)*pageSize)
                     .limit(pageSize)
+                    .populate('images', 'name url -_id')
 
     //we removed the await to get only the Promise
     let count = User.find(filter).count()
@@ -47,6 +82,7 @@ userSchema.statics.saveUser = async (userData)=>{
 
 userSchema.statics.findUser  = async(email)=>{
     let user = await User.findOne({email})
+                         .populate('images', 'name url description -_id')
     return user;
 }
 
@@ -61,7 +97,7 @@ userSchema.statics.updateUser = async (email, userData)=>{
 
 userSchema.statics.deleteUser = async(email)=>{
     let deleted = await User.findOneAndDelete({email})
-    console.log(deleted);
+    // console.log(deleted);
     return deleted;
 }
 

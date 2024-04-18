@@ -1,5 +1,6 @@
 const express = require('express');
 const userRoutes = require('./routes/userRoutes')
+const imageRoutes = require('./routes/imageRoutes')
 const path = require('path')
 const app = express();
 const port = 3001;
@@ -22,5 +23,6 @@ app.get('/', (req,res)=>{
 })
 
 app.use('/api/users', logger,  userRoutes )
+app.use('/api/images', logger,  imageRoutes )
 
 app.listen(port, ()=>console.log("running in port "+port) )
