@@ -1,5 +1,6 @@
 const { use } = require("../routes/userRoutes");
 const {mongoose} = require("./connectdb")
+const bcrypt = require("bcryptjs")
 
 const userSchema = mongoose.Schema({
     email:{
@@ -76,6 +77,8 @@ userSchema.statics.findUsers = async (filter={},
 }
 
 userSchema.statics.saveUser = async (userData)=>{
+    let hash = bcrypt.hashSync(userData.password, 10)
+    userData.password = hash; 
     let newUser = User(userData);
     return await newUser.save()
 }
@@ -88,6 +91,11 @@ userSchema.statics.findUser  = async(email)=>{
 
 userSchema.statics.updateUser = async (email, userData)=>{
     // delete userData.email
+    if (userData.password){
+        let hash = bcrypt.hashSync(userData.password, 10)
+        userData.password = hash; 
+    }
+
     let updatedUser = await User.findOneAndUpdate({email},
                                 {$set: userData},
                                 {new:true}
@@ -99,6 +107,19 @@ userSchema.statics.deleteUser = async(email)=>{
     let deleted = await User.findOneAndDelete({email})
     // console.log(deleted);
     return deleted;
+}
+
+userSchema.statics.authUser = async(email, password)=>{
+    let user = await User.findOne({email})
+
+    if(!user)
+        return null
+
+    if (bcrypt.compareSync(password, user.password)){
+        return user
+    }
+
+    return null
 }
 
 let User = mongoose.model('User', userSchema)
@@ -116,6 +137,8 @@ async function  createAndShow(){
     });
     User.findUsers();
 }
+
+
 
 // User.findUsers({email: /a/i},true);
 // User.findUsers({},true);

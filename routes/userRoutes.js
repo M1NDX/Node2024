@@ -59,7 +59,7 @@ router.get('/', auth.validateHeader, auth.validateAdmin, async (req,res)=>{
 
 
 
-router.get('/:uid', (req, res)=>{
+router.get('/:uid', auth.validateToken,  (req, res)=>{
     console.log(req.params.id);
     let user = users.find(u=> u.id == req.params.uid )
     if (!user){
@@ -132,14 +132,17 @@ router.put('/:email', async (req,res)=>{
         // update data z
     let {name, password} = req.body;
 
-    if(!name || !password) {
-        res.status(400).send({error: 'name, password or email are not valid'})
+    if(!name ) {
+        res.status(400).send({error: 'name or email are not valid'})
         return
     }
 
     user.name = name;
     //user.email = req.params.email;
-    user.password = password;
+    if(!user.password){
+        delete user.password;
+    }
+            
     let updatedUser = await User.updateUser(user.email, user);
     //fs.writeFileSync('./data/usersdata.json', JSON.stringify(users) )
     res.send(updatedUser)

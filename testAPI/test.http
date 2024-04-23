@@ -23,11 +23,19 @@ Content-Type: application/json
 x-auth: 23423
 
 {
-    "name":"Marta",
-    "email": "marta@test.com",
+    "name":"Martha",
+    "email": "martha@test.com",
     "password" : "1234"
 }
 
+### 
+POST {{host}}/api/login
+Content-Type: application/json
+
+{
+    "email": "martha@test.com",
+    "password" : "1234"
+}
 
 ###
 
@@ -71,7 +79,9 @@ Content-Type: application/json
 }
 
 ###
-GET {{host}}/api/images/test@test.com
+
+GET {{host}}/api/images/mine
+x-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hcnRoYUB0ZXN0LmNvbSIsIl9pZCI6IjY2MjdmM2ZhYjNkMGVmMzg0OTdmNmUzNyIsImlhdCI6MTcxMzg5ODkzOSwiZXhwIjoxNzEzODk5MTE5fQ.ZcT2kWWfzmXdLPJ3zEaf-kjGVmHtWc_wb-0obrxKODI
 
 ###
 

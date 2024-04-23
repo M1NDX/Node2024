@@ -1,10 +1,21 @@
 const router = require("express").Router()
 const {Image} = require('../db/Image')
+const auth = require('../middlewares/auth')
 
-router.get('/:email', async (req, res)=>{
+
+//  /api/images/mine
+router.get('/mine', auth.validateToken,  async(req,res)=>{
+    console.log("owner", req.email, req._id);
     const images =  await Image.getImages(req.params.email)
     res.send(images)
 })
+
+router.get('/:email',  async (req, res)=>{
+    const images =  await Image.getImages(req.params.email)
+    res.send(images)
+})
+
+
 
 router.post('/:email', async (req,res)=>{
     //validate body 
