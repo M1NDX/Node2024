@@ -37,7 +37,7 @@ function showUsersTable(userArray) {
                     <th>Email</th>
                     <th>Actions</th>
             </tr> 
-            ${userArray
+            ${userArray.users
               .map((user) => /*html*/ `
                 <tr> 
                     <td>${user.name}</td>
