@@ -20,9 +20,9 @@ async function loadData(){
     console.log(resp.status);
     let data = await resp.json()
     console.log(data);
-    sessionStorage.setItem('users', JSON.stringify(data))
-    usersArray=data;
-    showUsersTable(data)
+    sessionStorage.setItem('users', JSON.stringify(data.users))
+    usersArray=data.users;
+    showUsersTable(data.users)
     
 }
 
@@ -37,7 +37,7 @@ function showUsersTable(userArray) {
                     <th>Email</th>
                     <th>Actions</th>
             </tr> 
-            ${userArray.users
+            ${userArray
               .map((user) => /*html*/ `
                 <tr> 
                     <td>${user.name}</td>
