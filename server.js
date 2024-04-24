@@ -6,7 +6,7 @@ const authRoutes = require('./routes/authRoute')
 
 const path = require('path')
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 
 function logger(req, res, next){
