@@ -3,19 +3,18 @@ const {Image} = require('../db/Image')
 const auth = require('../middlewares/auth')
 
 
-//  /api/images/mine
+//  /api/images/mine  I MOVED THIS TO BE FIRST
 router.get('/mine', auth.validateToken,  async(req,res)=>{
     console.log("owner", req.email, req._id);
     const images =  await Image.getImages(req.params.email)
     res.send(images)
 })
 
+// THIS SHOULD BE THE SECOND
 router.get('/:email',  async (req, res)=>{
     const images =  await Image.getImages(req.params.email)
     res.send(images)
 })
-
-
 
 router.post('/:email', async (req,res)=>{
     //validate body 
