@@ -58,6 +58,29 @@ function validateToken(req, res, next){
 
 }
 
+function validateTokenWithCookies(req, res, next){
+    // let token = req.get('x-token')
+    let token = req.cookies.access_token;
 
-module.exports = {validateToken, validateHeader, validateAdmin, requiredAdmin}
+    if(!token){
+        res.status(401).send({error: "token is missing"})
+        return;
+    }
+
+    jwt.verify(token, process.env.TOKEN_KEY, (err, decoded)=>{
+        if(err){
+            res.status(401).send({error: err.message})
+            return
+        }
+
+        req.email= decoded.email;
+        req._id = decoded.id;
+        next()
+
+    })
+
+}
+
+
+module.exports = {validateToken, validateTokenWithCookies, validateHeader, validateAdmin, requiredAdmin}
 

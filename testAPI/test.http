@@ -88,3 +88,19 @@ x-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hcnRoYUB0ZXN0LmNvbS
 DELETE  {{host}}/api/images/test@test.com/soraImg3
 
 
+### 
+POST {{host}}/api/auth/login2
+Content-Type: application/json
+
+{
+    "email": "martha@test.com",
+    "password" : "1234"
+}
+
+###
+
+GET {{host}}/api/images/mine
+
+###
+
+GET {{host}}/api/auth/logout

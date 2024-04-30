@@ -1,0 +1,22 @@
+{{> navigation this}}
+
+{{#if name}}
+<h1 class="display-4">Users List</h1>
+
+<div class="list-users">
+    <ul class="list-group">
+        {{#each users}}
+        <li class="group-item"> {{this.name}}- {{this.email}}
+            {{#each this.images}}
+                <p class="ms-3"> {{this.url}}</p>
+            {{/each}}
+        </li>
+
+        {{/each}}
+    </ul>
+</div>
+{{else}}
+ <h1> First login</h1>
+{{/if}}
+
+<script></script>

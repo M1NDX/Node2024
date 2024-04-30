@@ -4,7 +4,7 @@ const auth = require('../middlewares/auth')
 
 
 //  /api/images/mine  I MOVED THIS TO BE FIRST
-router.get('/mine', auth.validateToken,  async(req,res)=>{
+router.get('/mine', auth.validateTokenWithCookies,  async(req,res)=>{
     console.log("owner", req.email, req._id);
     const images =  await Image.getImages(req.params.email)
     res.send(images)
